@@ -1,7 +1,7 @@
 import React from 'react';
 import { subscribeToTimer, disconnect } from './socket';
 import Chart from "react-apexcharts";
-
+import './index.css';
 export default class CustomChart extends React.Component {
     state = {
         value: [],
@@ -12,6 +12,15 @@ export default class CustomChart extends React.Component {
     barChartOptions = {
         chart: {
             id: "line"
+        },
+        title: { 
+            text: "Bar-Chart for Random Numbers",
+            align: "center",
+            style: {
+                fontWeight: 'bold',
+                fontSize: '20px',
+                color: 'red'
+            }
         },
         xaxis: {
             categories: [
@@ -39,6 +48,21 @@ export default class CustomChart extends React.Component {
         }
     };
 
+    lineChartOptions = {
+        chart: {
+            id: "line"
+        },
+        title: { 
+            text: "Line-Chart for Random Numbers",
+            align: "center",
+            style: {
+                fontWeight: 'bold',
+                fontSize: '20px',
+                color: 'red'
+            }
+        },
+    };
+    
     componentDidMount() {
         subscribeToTimer(this.subscriber)
     };
@@ -60,9 +84,7 @@ export default class CustomChart extends React.Component {
 
     render() {
         const lineChartOptions = {
-            chart: {
-                id: "line"
-            },
+            ...this.lineChartOptions,
             xaxis: {
                 categories: this.state.timestamp
             }
@@ -76,18 +98,22 @@ export default class CustomChart extends React.Component {
             data: this.state.frequency
         }];
 
-        return <div>
+        return (<div>
+            <h1> Testing Project Chart Application</h1>
             <Chart 
                 options={lineChartOptions}
                 series={lineChartSeries}
                 type="line"
-                />
-
+                className="line-chart"
+                height="300"
+            />
             <Chart 
                 options={this.barChartOptions}
                 series={barChartSeries}
                 type="bar"
-                />
-        </div>
+                height="300"
+                className="bar-chart"
+            />
+        </div>);
     }
 }
