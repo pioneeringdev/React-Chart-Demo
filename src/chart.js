@@ -1,13 +1,15 @@
 import React from 'react';
 import { subscribeToTimer, disconnect } from './socket';
+import Alert from 'react-s-alert';
 import Chart from "react-apexcharts";
 import './index.css';
 export default class CustomChart extends React.Component {
     state = {
         value: [],
         timestamp: [],
-        frequency: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
-    }
+        frequency: [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+        threshold: 100,
+    };
 
     barChartOptions = {
         chart: {
@@ -78,9 +80,23 @@ export default class CustomChart extends React.Component {
         this.setState({ 
             value: [...this.state.value, value.toFixed(2)], 
             timestamp: [...this.state.timestamp, timestamp],
-            frequency: [...frequency]
+            frequency: [...frequency],
         });
+        if (value > this.state.threshold) {
+            Alert.warning(`${value.toFixed(2)}`, {
+                position: 'top-right',
+                effect: 'scale',
+                beep: true,
+                timeout: 1000,
+            });
+        }
     };
+
+    handleChange = fieldName => e => {
+        this.setState({
+            [fieldName]: e.target.value
+        });
+    }
 
     render() {
         const lineChartOptions = {
@@ -100,6 +116,15 @@ export default class CustomChart extends React.Component {
 
         return (<div>
             <h1> Testing Project Chart Application</h1>
+            <div className="threshold">
+                <p> Alert Threshold:</p>
+                <input
+                    type="text"
+                    value={this.state.threshold}
+                    onChange={this.handleChange('threshold')}
+                    name="treshold"
+                    />
+            </div>
             <Chart 
                 options={lineChartOptions}
                 series={lineChartSeries}
